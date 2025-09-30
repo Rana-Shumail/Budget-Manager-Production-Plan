@@ -1,0 +1,47 @@
+import sqlite3
+
+# Connect to SQLite database (or create it if it doesn't exist)
+conn = sqlite3.connect('budgets.db')
+
+# Create a cursor object to execute database commands
+cur = conn.cursor()
+
+# Create a table named 'budgets' if it doesn't already exist
+# cur.execute("""CREATE TABLE budgets (
+#           budget_name text,
+#           budget_amount real
+#       )""")
+
+# Insert sample data into the budgets table
+# cur.execute("INSERT INTO budgets VALUES ('Bank', 2000.00)")
+
+# Query the database to fetch one or all records from the budgets table
+# cur.execute("SELECT * FROM budgets") # The * can be replaced with specific column names like 'budget_name' or 'budget_amount'
+# budget = cur.fetchone() # fetches last record. To specify which record, use 'fetchone()[index]' or WHERE clause in database command
+# budget = cur.fetchall() # fetches all records.
+
+# for budget in budget:
+#    print(budget) # for an specific column, use 'print(budget[index])'
+
+# Select records with a specific condition
+# cur.execute("SELECT * FROM budgets WHERE budget_name = 'Bank'")
+# budget = cur.fetchall()
+
+# Update records in the budgets table
+# cur.execute("UPDATE budgets SET budget_amount = 1000.00 WHERE budget_name = 'Cash'")
+
+# Delete records from the budgets table
+# cur.execute("DELETE FROM budgets WHERE budget_name = 'Cash'")
+
+# AND OR operators in SQL queries
+# cur.execute("SELECT * FROM budgets WHERE budget_name = 'Bank' AND budget_amount = 2000.00")
+# cur.execute("SELECT * FROM budgets WHERE budget_name = 'Bank' OR budget_amount = 2000.00")
+
+# Delete/drop table (DO NOT USE UNLESS ABSOLUTELY NECESSARY. This function is only for informational purposes)
+# cur.execute("DROP TABLE budgets")
+
+# Commit changes and close the connection
+conn.commit()
+
+# Close the connection
+conn.close()
