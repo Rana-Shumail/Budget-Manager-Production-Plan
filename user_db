@@ -1,0 +1,28 @@
+import sqlite3
+
+conn = sqlite3.connect('users.db')
+
+cur = conn.cursor()
+
+# cur.execute("""CREATE TABLE user (
+#            username text,
+#            password text
+#        )""")
+
+# cur.execute("INSERT INTO user VALUES ('testuser', 'testpassword')")
+
+# cur.execute("SELECT * FROM user")
+
+# cur.execute("SELECT * FROM user WHERE username = 'testuser' AND password = 'newpassword'")
+
+# cur.execute("DELETE FROM user WHERE username = 'testuser' AND password = 'testpassword'")
+
+# cur.execute("UPDATE user SET password = 'newpassword' WHERE username = 'testuser'")
+
+# user = cur.fetchall()
+# for u in user:
+#   print(u)
+
+conn.commit()
+
+conn.close()
