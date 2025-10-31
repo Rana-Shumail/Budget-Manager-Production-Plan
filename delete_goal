@@ -1,0 +1,35 @@
+import tkinter as tk
+from goals_db import fetch_goals, delete_goal
+
+def render_goals(container):
+    """
+    Render all goals from the database into the UI.
+    Each goal has a label and a trash icon button to delete it.
+    """
+    for goal in fetch_goals():
+        goal_id, name, amount = goal
+
+        # Create a frame for each goal
+        frame = tk.Frame(container, bg="#1e1e1e")
+
+        # Display goal name and amount
+        tk.Label(frame, text=name, fg="#b6ff9c", bg="#1e1e1e").pack(side="left", padx=10)
+        tk.Label(frame, text=f"${amount:.2f}", fg="#b6ff9c", bg="#1e1e1e").pack(side="left", padx=10)
+
+        # Load trash icon image
+        trash_icon = tk.PhotoImage(file="trash_icon.png")
+
+        # Create delete button with trash icon
+        delete_btn = tk.Button(
+            frame,
+            image=trash_icon,
+            command=lambda gid=goal_id, f=frame: (delete_goal(gid), f.destroy()),
+            bg="#1e1e1e",
+            activebackground="#1e1e1e",
+            borderwidth=0
+        )
+        delete_btn.image = trash_icon  # Prevent garbage collection
+        delete_btn.pack(side="right", padx=10)
+
+        # Pack the goal frame into the container
+        frame.pack(pady=5, fill="x")
