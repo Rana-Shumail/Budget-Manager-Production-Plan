@@ -1,4 +1,4 @@
-# Burget-Manager-Production-Plan
+# Budget-Manager-Production-Plan
 
 ### Setup & Project Structure
 - [ ] Decide programming language and framework (e.g., Python + Tkinter, Java + Swing, or C# + WinForms)
