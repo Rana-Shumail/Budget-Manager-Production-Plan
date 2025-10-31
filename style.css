@@ -35,6 +35,7 @@ backdrop-filter: blur(20px);
 box-shadow:0 0 10px rgba(0, 0, 0, .2);
 color: #fff;
 border-radius: 50px;
+
 padding: 60px 40px;
 }
 
@@ -60,6 +61,7 @@ padding: 60px 40px;
     border-radius: 40px;
     font-size: 16px;
     color: #fff;
+
     padding: 20px 20px 20px 45px;
 }
 
@@ -106,6 +108,46 @@ padding: 60px 40px;
     font-size: 16px;
     color: #333;
     font-weight: 600;
+}
+
+.wrapper .btn {
+    transition: all 0.4s ease;  
+}
+
+
+.wrapper .btn:hover {
+    background: #96cb0f;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(186, 255, 36, 0.541);
+}
+
+.signup-btn {
+    width: 50%;
+    max-width: 200px;
+    background: #41911c;
+    color: #333;
+    border-radius: 40px;
+    font-weight: 600;
+    text-align: center;
+    padding: 10px 0;
+    text-decoration: none;
+    font-size: 16px;
+    display: inline-block;
+    border: none;
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+}
+
+.signup-btn {
+    transition: all 0.3s ease;  
+}
+
+
+.signup-btn:hover {
+    background: #0a8106;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(174, 255, 0, 0.3);
 }
 
 .wrapper.register-link {
