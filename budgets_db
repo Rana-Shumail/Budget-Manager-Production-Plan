@@ -1,47 +1,97 @@
 import sqlite3
 
-# Connect to SQLite database (or create it if it doesn't exist)
-conn = sqlite3.connect('budgets.db')
+# Database filename
+DB_NAME = "budgets.db"
 
-# Create a cursor object to execute database commands
-cur = conn.cursor()
+def connect():
+    """
+    Establish a connection to the SQLite database.
+    Returns a connection object.
+    """
+    return sqlite3.connect(DB_NAME)
 
-# Create a table named 'budgets' if it doesn't already exist
-# cur.execute("""CREATE TABLE budgets (
-#           budget_name text,
-#           budget_amount real
-#       )""")
+def create_table():
+    """
+    Create the 'budgets' table if it doesn't already exist.
+    Columns:
+        - id: unique identifier (auto-incremented)
+        - budget_name: name of the budget category
+        - budget_amount: amount allocated to the budget
+    """
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS budgets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            budget_name TEXT,
+            budget_amount REAL
+        )
+    """)
+    conn.commit()
+    conn.close()
 
-# Insert sample data into the budgets table
-# cur.execute("INSERT INTO budgets VALUES ('Bank', 2000.00)")
+def insert_budget(name, amount):
+    """
+    Insert a new budget entry into the database.
+    Parameters:
+        - name (str): name of the budget
+        - amount (float): amount allocated
+    """
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO budgets (budget_name, budget_amount) VALUES (?, ?)", (name, amount))
+    conn.commit()
+    conn.close()
 
-# Query the database to fetch one or all records from the budgets table
-# cur.execute("SELECT * FROM budgets") # The * can be replaced with specific column names like 'budget_name' or 'budget_amount'
-# budget = cur.fetchone() # fetches last record. To specify which record, use 'fetchone()[index]' or WHERE clause in database command
-# budget = cur.fetchall() # fetches all records.
+def fetch_budgets():
+    """
+    Retrieve all budget entries from the database.
+    Returns:
+        - List of tuples: (id, budget_name, budget_amount)
+    """
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("SELECT id, budget_name, budget_amount FROM budgets")
+    budgets = cur.fetchall()
+    conn.close()
+    return budgets
 
-# for budget in budget:
-#    print(budget) # for an specific column, use 'print(budget[index])'
+def fetch_budget_by_name(name):
+    """
+    Retrieve budget entries that match a specific name.
+    Parameters:
+        - name (str): budget name to search for
+    Returns:
+        - List of matching tuples
+    """
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("SELECT id, budget_name, budget_amount FROM budgets WHERE budget_name = ?", (name,))
+    results = cur.fetchall()
+    conn.close()
+    return results
 
-# Select records with a specific condition
-# cur.execute("SELECT * FROM budgets WHERE budget_name = 'Bank'")
-# budget = cur.fetchall()
+def update_budget(name, new_amount):
+    """
+    Update the amount for a specific budget entry.
+    Parameters:
+        - name (str): name of the budget to update
+        - new_amount (float): new amount to set
+    """
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("UPDATE budgets SET budget_amount = ? WHERE budget_name = ?", (new_amount, name))
+    conn.commit()
+    conn.close()
 
-# Update records in the budgets table
-# cur.execute("UPDATE budgets SET budget_amount = 1000.00 WHERE budget_name = 'Cash'")
-
-# Delete records from the budgets table
-# cur.execute("DELETE FROM budgets WHERE budget_name = 'Cash'")
-
-# AND OR operators in SQL queries
-# cur.execute("SELECT * FROM budgets WHERE budget_name = 'Bank' AND budget_amount = 2000.00")
-# cur.execute("SELECT * FROM budgets WHERE budget_name = 'Bank' OR budget_amount = 2000.00")
-
-# Delete/drop table (DO NOT USE UNLESS ABSOLUTELY NECESSARY. This function is only for informational purposes)
-# cur.execute("DROP TABLE budgets")
-
-# Commit changes and close the connection
-conn.commit()
-
-# Close the connection
-conn.close()
+def delete_budget(name):
+    """
+    Delete a budget entry by name.
+    Parameters:
+        - name (str): name of the budget to delete
+    """
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM budgets WHERE budget_name = ?", (name,))
+    conn.commit()
+    conn.close()
