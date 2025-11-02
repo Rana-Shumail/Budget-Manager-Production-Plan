@@ -1,69 +1,36 @@
 import sqlite3
 
-# Database filename
-DB_NAME = "goals.db"
+# Connect to SQLite database (or create it if it doesn't exist)
+conn = sqlite3.connect('goals.db')
 
-def connect():
-    """
-    Establish a connection to the SQLite database.
-    Returns a connection object.
-    """
-    return sqlite3.connect(DB_NAME)
+# Create a cursor object to execute database commands
+cur = conn.cursor()
 
-def create_table():
-    """
-    Create the 'goals' table if it doesn't already exist.
-    Columns:
-        - id: unique identifier (auto-incremented)
-        - goal_name: name of the goal
-        - goal_amount: amount allocated to the goal
-    """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS goals (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            goal_name TEXT,
-            goal_amount REAL
-        )
-    """)
-    conn.commit()
-    conn.close()
+# Create a table named 'goals' if it doesn't already exist
+cur.execute("""CREATE TABLE goals (
+           goal_name text,
+           goal_amount real
+       )""")
 
-def insert_goal(name, amount):
-    """
-    Insert a new goal into the database.
-    Parameters:
-        - name (str): name of the goal
-        - amount (float): amount allocated
-    """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute("INSERT INTO goals (goal_name, goal_amount) VALUES (?, ?)", (name, amount))
-    conn.commit()
-    conn.close()
+# Insert sample data into the goals table
+cur.execute("INSERT INTO goals VALUES ('Winter break', 500.00)")
 
-def fetch_goals():
-    """
-    Retrieve all goals from the database.
-    Returns:
-        - List of tuples: (id, goal_name, goal_amount)
-    """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute("SELECT id, goal_name, goal_amount FROM goals")
-    goals = cur.fetchall()
-    conn.close()
-    return goals
+# Query the database to fetch one or all records from the goals table
+cur.execute("SELECT * FROM goals")
 
-def delete_goal(goal_id):
-    """
-    Delete a goal from the database using its unique ID.
-    Parameters:
-        - goal_id (int): ID of the goal to delete
-    """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM goals WHERE id = ?", (goal_id,))
-    conn.commit()
-    conn.close()
+goal = cur.fetchone() # fetches last record. To specify which record, use 'fetchone()[index]' or WHERE clause in database command
+goals = cur.fetchall() # fetches all records.
+cur.execute("SELECT * FROM goals WHERE goal_name = 'Winter break'")
+
+# Delete records from the goals table
+cur.execute("DELETE FROM goals WHERE goal_name = 'Winter break'")
+
+# Update records in the goals table
+cur.execute("UPDATE goals SET goal_amount = 600.00 WHERE goal_name = 'Winter break'")
+
+goals = cur.fetchall()
+for goal in goals:
+  print(goal)
+
+conn.commit()
+conn.close()
