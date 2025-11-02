@@ -1,94 +1,28 @@
 import sqlite3
 
-# Database filename
-DB_NAME = "users.db"
+conn = sqlite3.connect('users.db')
 
-def connect():
-    """
-    Establish a connection to the SQLite database.
-    Returns a connection object.
-    """
-    return sqlite3.connect(DB_NAME)
+cur = conn.cursor()
 
-def create_table():
-    """
-    Create the 'user' table if it doesn't already exist.
-    Columns:
-        - username: text field for the user's name
-        - password: text field for the user's password
-    """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS user (
-            username TEXT,
-            password TEXT
-        )
-    """)
-    conn.commit()
-    conn.close()
+cur.execute("""CREATE TABLE user (
+           username text,
+           password text
+       )""")
 
-def insert_user(username, password):
-    """
-    Insert a new user into the database.
-    Parameters:
-        - username (str): the user's name
-        - password (str): the user's password
-    """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute("INSERT INTO user (username, password) VALUES (?, ?)", (username, password))
-    conn.commit()
-    conn.close()
+cur.execute("INSERT INTO user VALUES ('testuser', 'testpassword')")
 
-def fetch_all_users():
-    """
-    Retrieve all users from the database.
-    Returns:
-        - List of tuples: (username, password)
-    """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute("SELECT username, password FROM user")
-    users = cur.fetchall()
-    conn.close()
-    return users
+cur.execute("SELECT * FROM user")
 
-def validate_user(username, password):
-    """
-    Check if a user with the given username and password exists.
-    Returns:
-        - True if user exists, False otherwise
-    """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM user WHERE username = ? AND password = ?", (username, password))
-    result = cur.fetchone()
-    conn.close()
-    return result is not None
+cur.execute("SELECT * FROM user WHERE username = 'testuser' AND password = 'newpassword'")
 
-def update_password(username, new_password):
-    """
-    Update the password for a specific user.
-    Parameters:
-        - username (str): the user's name
-        - new_password (str): the new password to set
-    """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute("UPDATE user SET password = ? WHERE username = ?", (new_password, username))
-    conn.commit()
-    conn.close()
+cur.execute("DELETE FROM user WHERE username = 'testuser' AND password = 'testpassword'")
 
-def delete_user(username, password):
-    """
-    Delete a user from the database using both username and password.
-    Parameters:
-        - username (str): the user's name
-        - password (str): the user's password
-    """
-    conn = connect()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM user WHERE username = ? AND password = ?", (username, password))
-    conn.commit()
-    conn.close()
+cur.execute("UPDATE user SET password = 'newpassword' WHERE username = 'testuser'")
+
+user = cur.fetchall()
+for u in user:
+  print(u)
+
+conn.commit()
+
+conn.close()
