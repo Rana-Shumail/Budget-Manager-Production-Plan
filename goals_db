@@ -1,36 +1,41 @@
 import sqlite3
 
-# Connect to SQLite database (or create it if it doesn't exist)
-conn = sqlite3.connect('goals.db')
+DB_NAME = "goals.db"
 
-# Create a cursor object to execute database commands
-cur = conn.cursor()
+def connect():
+    return sqlite3.connect(DB_NAME)
 
-# Create a table named 'goals' if it doesn't already exist
-cur.execute("""CREATE TABLE goals (
-           goal_name text,
-           goal_amount real
-       )""")
+def create_table():
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS goals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            goal_name TEXT,
+            goal_amount REAL
+        )
+    """)
+    conn.commit()
+    conn.close()
 
-# Insert sample data into the goals table
-cur.execute("INSERT INTO goals VALUES ('Winter break', 500.00)")
+def insert_goal(name, amount):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("INSERT INTO goals (goal_name, goal_amount) VALUES (?, ?)", (name, amount))
+    conn.commit()
+    conn.close()
 
-# Query the database to fetch one or all records from the goals table
-cur.execute("SELECT * FROM goals")
+def fetch_goals():
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("SELECT id, goal_name, goal_amount FROM goals")
+    goals = cur.fetchall()
+    conn.close()
+    return goals
 
-goal = cur.fetchone() # fetches last record. To specify which record, use 'fetchone()[index]' or WHERE clause in database command
-goals = cur.fetchall() # fetches all records.
-cur.execute("SELECT * FROM goals WHERE goal_name = 'Winter break'")
-
-# Delete records from the goals table
-cur.execute("DELETE FROM goals WHERE goal_name = 'Winter break'")
-
-# Update records in the goals table
-cur.execute("UPDATE goals SET goal_amount = 600.00 WHERE goal_name = 'Winter break'")
-
-goals = cur.fetchall()
-for goal in goals:
-  print(goal)
-
-conn.commit()
-conn.close()
+def delete_goal(goal_id):
+    conn = connect()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM goals WHERE id = ?", (goal_id,))
+    conn.commit()
+    conn.close()
