@@ -1,10 +1,13 @@
 import psycopg2
 import os
+from dotenv import load_dotenv
 
-# Your Render URL
-DB_URL = os.environ.get('DATABASE_URL', "postgresql://usersbudbuddy_user:lM6hObuSlCwaegoFiwhxn0Wv0XGNDAog@dpg-d4lp420gjchc73arqh8g-a.oregon-postgres.render.com/usersbudbuddy")
+load_dotenv()
 
+DB_URL = os.getenv('DATABASE_URL')
 def connect():
+    if not DB_URL:
+        raise ValueError("DATABASE_URL is missing! Make sure you have a .env file locally or Environment Variables set in Render.")
     return psycopg2.connect(DB_URL, sslmode='require')
 
 def create_table():
