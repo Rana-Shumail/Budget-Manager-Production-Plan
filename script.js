@@ -4,7 +4,7 @@
  */
 
 // CONFIGURATION
-const API_URL = 'https://budbuddy-api.onrender.com'; 
+const API_URL = 'https://budget-manager-production-plan.onrender.com'; 
 const KEY_CURRENT_USER = 'budbuddy_current_user';
 
 // --- AUTHENTICATION ---
@@ -494,3 +494,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
