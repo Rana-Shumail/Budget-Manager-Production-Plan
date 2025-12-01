@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BudBuddy - Dashboard</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #aeff00;
+            --dark: #121212;
+            --card-bg: #1e1e1e;
+            --text: #ffffff;
+            --gray: #888;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { background-color: var(--dark); color: var(--text); display: flex; min-height: 100vh; }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 250px; background: var(--card-bg); padding: 20px;
+            display: flex; flex-direction: column; position: fixed; height: 100%;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            font-family: 'Lobster', cursive; font-size: 2rem; color: var(--primary);
+            text-align: center; margin-bottom: 40px; text-shadow: 0 0 10px rgba(174, 255, 0, 0.3);
+        }
+
+        .nav-links { list-style: none; }
+        .nav-links li { margin-bottom: 15px; }
+        
+        .nav-links a {
+            display: flex; align-items: center; padding: 12px 15px;
+            color: var(--gray); text-decoration: none; border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(174, 255, 0, 0.1); color: var(--primary);
+        }
+        
+        .nav-links i { margin-right: 10px; font-size: 1.2rem; }
+        
+        .user-info { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .user-info p { color: var(--gray); font-size: 0.9rem; }
+        .user-info h4 { color: var(--primary); }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { margin-left: 250px; padding: 30px; width: 100%; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .btn-logout { 
+            padding: 8px 20px; border: 1px solid var(--primary); color: var(--primary); 
+            background: transparent; border-radius: 20px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-logout:hover { background: var(--primary); color: var(--dark); }
+
+        /* --- DASHBOARD GRID --- */
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px; margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--card-bg); padding: 20px; border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card h3 { margin-bottom: 15px; font-weight: 400; color: var(--gray); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .balance { font-size: 2.5rem; font-weight: 600; color: var(--text); }
+        .balance span { color: var(--primary); font-size: 1.5rem; }
+
+        /* --- GOALS & BUDGET LISTS --- */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-add {
+            background: var(--primary); color: var(--dark); border: none;
+            width: 35px; height: 35px; border-radius: 50%; font-size: 1.5rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+
+        .list-container { display: flex; flex-direction: column; gap: 15px; }
+
+        .item-card {
+            background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .progress-bg {
+            width: 100%; height: 6px; background: #333; border-radius: 3px; margin-top: 8px; overflow: hidden;
+        }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 1s ease; }
+
+        /* --- MODALS --- */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: var(--card-bg); padding: 30px; border-radius: 20px; width: 400px;
+            border: 1px solid var(--primary); text-align: center;
+        }
+        .modal input {
+            width: 100%; padding: 12px; margin: 10px 0; background: #333;
+            border: 1px solid #444; color: #fff; border-radius: 8px; outline: none;
+        }
+        .modal input:focus { border-color: var(--primary); }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    
+    <div class="logo">BudBuddy</div>
+
+<ul class="nav-links">
+    <li><a href="dashboard.html" class="active"><i class='bx bxs-dashboard'></i> Dashboard</a></li>
+    <li><a href="budgets.html"><i class='bx bxs-wallet'></i> Budgets</a></li>
+    <li><a href="goals.html"><i class='bx bxs-trophy'></i> Goals</a></li>
+    <li><a href="reports.html"><i class='bx bxs-report'></i> Reports</a></li>
+</ul>
+
+    <div class="user-info">
+        <p>Logged in as</p>
+        <h4 id="userDisplay">User</h4>
+    </div>
+
+</div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>Overview</h2>
+            <button onclick="logout()" class="btn-logout">Logout</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>Total Balance</h3>
+                <div class="balance">$<span id="totalBalance">0.00</span></div>
+            </div>
+            <div class="card">
+                <h3>Monthly Budget</h3>
+                <div class="balance">$<span id="monthlyBudget">0.00</span></div>
+            </div>
+            <div class="card">
+                <h3>Total Expenses</h3>
+                <div class="balance" style="color: #ff4d4d;">-$<span id="totalExpenses" style="color: #ff4d4d;">0.00</span></div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 30px;">
+            <div class="section-header">
+                <h3>Financial Goals</h3>
+                <button class="btn-add" onclick="document.getElementById('newGoalModal').style.display='flex'">+</button>
+            </div>
+            <div id="goalsContainer" class="list-container">
+                <p style="color:#666; font-size:0.9rem;">No goals set yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="newGoalModal" class="modal">
+        <div class="modal-content">
+            <h2 style="color:var(--primary); margin-bottom:20px;">Add New Goal</h2>
+            <form id="addGoalForm">
+                <input type="text" id="goalTitle" placeholder="Goal Name (e.g. New Car)" required>
+                <input type="number" id="goalTarget" placeholder="Target Amount ($)" required>
+                <input type="number" id="goalCurrent" placeholder="Current Savings ($)" required>
+                <input type="date" id="goalDate" required>
+                <button type="submit" class="btn-logout" style="background:var(--primary); color:#000; width:100%; margin-top:10px;">Save Goal</button>
+                <button type="button" onclick="document.getElementById('newGoalModal').style.display='none'" style="background:transparent; border:none; color:#888; margin-top:10px; cursor:pointer;">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
