@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BudBuddy - Reports</title>
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root { --primary: #aeff00; --dark: #121212; --card-bg: #1e1e1e; --text: #ffffff; --gray: #888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--dark); color: var(--text); display: flex; min-height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar { width: 250px; background: var(--card-bg); padding: 20px; display: flex; flex-direction: column; position: fixed; height: 100%; border-right: 1px solid rgba(255,255,255,0.1); }
+        .logo { font-family: 'Lobster', cursive; font-size: 2rem; color: var(--primary); text-align: center; margin-bottom: 40px; text-shadow: 0 0 10px rgba(174, 255, 0, 0.3); }
+        .nav-links { list-style: none; }
+        .nav-links li { margin-bottom: 15px; }
+        .nav-links a { display: flex; align-items: center; padding: 12px 15px; color: var(--gray); text-decoration: none; border-radius: 10px; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { background: rgba(174, 255, 0, 0.1); color: var(--primary); }
+        .nav-links i { margin-right: 10px; font-size: 1.2rem; }
+        .user-info { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .user-info p { color: var(--gray); font-size: 0.9rem; }
+        .user-info h4 { color: var(--primary); }
+
+        /* MAIN CONTENT */
+        .main-content { margin-left: 250px; padding: 30px; width: 100%; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .btn-logout { padding: 8px 20px; border: 1px solid var(--primary); color: var(--primary); background: transparent; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .btn-logout:hover { background: var(--primary); color: var(--dark); }
+
+        /* NEW: FUTURISTIC GRID FOR CHARTS */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            transition: 0.3s;
+        }
+        .chart-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 0 15px rgba(174, 255, 0, 0.1); }
+        
+        .chart-title { font-size: 1.2rem; margin-bottom: 5px; color: #fff; }
+        .chart-subtitle { font-size: 0.9rem; color: #888; margin-bottom: 15px; }
+
+        /* Limit canvas height so they look like gauges */
+        .canvas-wrapper {
+            position: relative;
+            height: 200px; 
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">BudBuddy</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html"><i class='bx bxs-dashboard'></i> Dashboard</a></li>
+            <li><a href="budgets.html"><i class='bx bxs-wallet'></i> Budgets</a></li>
+            <li><a href="goals.html"><i class='bx bxs-trophy'></i> Goals</a></li>
+            <li><a href="reports.html" class="active"><i class='bx bxs-report'></i> Reports</a></li>
+        </ul>
+        <div class="user-info">
+            <p>Logged in as</p>
+            <h4 id="userDisplay">User</h4>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>Budget Health Monitor</h2>
+            <button onclick="logout()" class="btn-logout">Logout</button>
+        </div>
+
+        <div id="reportsGrid" class="charts-grid">
+            <p id="loadingMsg" style="color:#666;">Loading analytics...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
