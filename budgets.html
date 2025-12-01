@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BudBuddy - Budgets</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --primary: #aeff00; --dark: #121212; --card-bg: #1e1e1e; --text: #ffffff; --gray: #888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--dark); color: var(--text); display: flex; min-height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar { width: 250px; background: var(--card-bg); padding: 20px; display: flex; flex-direction: column; position: fixed; height: 100%; border-right: 1px solid rgba(255,255,255,0.1); }
+        .logo { font-family: 'Lobster', cursive; font-size: 2rem; color: var(--primary); text-align: center; margin-bottom: 40px; text-shadow: 0 0 10px rgba(174, 255, 0, 0.3); }
+        .nav-links { list-style: none; }
+        .nav-links li { margin-bottom: 15px; }
+        .nav-links a { display: flex; align-items: center; padding: 12px 15px; color: var(--gray); text-decoration: none; border-radius: 10px; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { background: rgba(174, 255, 0, 0.1); color: var(--primary); }
+        .nav-links i { margin-right: 10px; font-size: 1.2rem; }
+        .user-info { margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .user-info p { color: var(--gray); font-size: 0.9rem; }
+        .user-info h4 { color: var(--primary); }
+
+        /* MAIN CONTENT */
+        .main-content { margin-left: 250px; padding: 30px; width: 100%; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .btn-logout { padding: 8px 20px; border: 1px solid var(--primary); color: var(--primary); background: transparent; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .btn-logout:hover { background: var(--primary); color: var(--dark); }
+
+        /* CARDS & GRID */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); }
+        .card h3 { margin-bottom: 15px; font-weight: 400; color: var(--gray); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .balance { font-size: 2.5rem; font-weight: 600; color: var(--text); }
+        .btn-add { background: var(--primary); color: var(--dark); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
+        .modal-content { background: var(--card-bg); padding: 30px; border-radius: 20px; width: 400px; border: 1px solid var(--primary); text-align: center; }
+        .modal input { width: 100%; padding: 12px; margin: 10px 0; background: #333; border: 1px solid #444; color: #fff; border-radius: 8px; outline: none; }
+        .modal input:focus { border-color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">BudBuddy</div>
+
+
+<ul class="nav-links">
+    <li><a href="dashboard.html"><i class='bx bxs-dashboard'></i> Dashboard</a></li>
+    <li><a href="budgets.html" class="active"><i class='bx bxs-wallet'></i> Budgets</a></li>
+    <li><a href="goals.html"><i class='bx bxs-trophy'></i> Goals</a></li>
+    <li><a href="reports.html"><i class='bx bxs-report'></i> Reports</a></li>
+</ul>
+
+<div class="user-info">
+            <p>Logged in as</p>
+            <h4 id="userDisplay">User</h4>
+        </div>
+    </div>
+
+    <div class="main-content">
+    <div class="header">
+        <h2>Budget Planner</h2>
+        <button onclick="logout()" class="btn-logout">Logout</button>
+    </div>
+
+    <div class="card" style="margin-bottom: 30px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+            <h3 style="margin-bottom:5px;">Total Monthly Budget</h3>
+            <div class="balance">$<span id="totalBudgetDisplay">0.00</span></div>
+        </div>
+        <button class="btn-add" onclick="document.getElementById('newBudgetModal').style.display='flex'">+</button>
+    </div>
+
+    <div id="budgetsContainer" style="display: flex; flex-direction: column; gap: 20px;">
+        </div>
+</div>
+
+<div id="newBudgetModal" class="modal">
+    <div class="modal-content">
+        <h2 style="color:var(--primary); margin-bottom:20px;">New Budget Category</h2>
+        <form id="addBudgetForm">
+            <input type="text" id="budgetCategory" placeholder="Category (e.g. Food)" required>
+            <input type="number" id="budgetAmount" placeholder="Limit Amount ($)" required>
+            <button type="submit" class="btn-logout" style="background:var(--primary); color:#000; width:100%;">Create Budget</button>
+            <button type="button" onclick="document.getElementById('newBudgetModal').style.display='none'" style="background:transparent; border:none; color:#888; margin-top:10px; cursor:pointer;">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<div id="newExpenseModal" class="modal">
+    <div class="modal-content">
+        <h2 style="color:#ff4d4d; margin-bottom:20px;">Add Expense</h2>
+        <form id="addExpenseForm">
+            <input type="hidden" id="expenseBudgetID">
+            
+            <input type="text" id="expenseDesc" placeholder="Description (e.g. McDonald's)" required>
+            <input type="number" id="expenseAmount" placeholder="Cost ($)" required>
+            <input type="date" id="expenseDate" required>
+            
+            <button type="submit" class="btn-logout" style="background:#ff4d4d; color:#fff; width:100%; margin-top:10px;">Add Expense</button>
+            <button type="button" onclick="document.getElementById('newExpenseModal').style.display='none'" style="background:transparent; border:none; color:#888; margin-top:10px; cursor:pointer;">Cancel</button>
+        </form>
+    </div>
+</div>
+    <script src="script.js"></script>
+</body>
+</html>
