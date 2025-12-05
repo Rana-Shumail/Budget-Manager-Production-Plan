@@ -30,18 +30,18 @@ class Goal:
 def insert_goal(goal):
         conn_db = ConnectDB()
 
-        sql = f"""INSERT INTO goal (name_goal, amount_goal) 
-                VALUES ('{goal.name_goal}', '{goal.amount_goal}')"""
+        sql = """INSERT INTO goal (name_goal, amount_goal) 
+                VALUES (?, ?)"""
             
         try:
-            conn_db.cursor.execute(sql)
+            conn_db.cursor.execute(sql, (goal.name_goal, goal.amount_goal))
             conn_db.close_connection()
             title = 'Connection'
             message = 'Data inserted into Goal table.'
             messagebox.showinfo(title, message)
         except:
             title = 'Connection'
-            message = 'Table budget Goal does not exist.'
+            message = 'Could not insert data into Goal table.'
             messagebox.showerror(title, message)
 
 def fetch_goals():
@@ -64,29 +64,29 @@ def fetch_goals():
 def edit_goal(goal, id_goal):
     conn_db = ConnectDB()
 
-    sql = f"""UPDATE goal 
-              SET name_goal = '{goal.name_goal}', amount_goal = '{goal.amount_goal}' 
-              WHERE id_goal = {id_goal}"""
+    sql = """UPDATE goal 
+              SET name_goal = ?, amount_goal = ? 
+              WHERE id_goal = ?"""
     
     try:
-        conn_db.cursor.execute(sql)
+        conn_db.cursor.execute(sql, (goal.name_goal, goal.amount_goal, id_goal))
         conn_db.close_connection()
         title = 'Connection'
         message = 'Data updated in Goal table.'
         messagebox.showinfo(title, message)
     except:
         title = 'Connection'
-        message = 'Table Goal does not exist.'
+        message = 'Could not update data in Goal table.'
         messagebox.showerror(title, message)
 
 def delete_goal(id_goal):
     conn_db = ConnectDB()
 
-    sql = f"""DELETE FROM goal 
-              WHERE id_goal = {id_goal}"""
+    sql = """DELETE FROM goal 
+              WHERE id_goal = ?"""
     
     try:
-        conn_db.cursor.execute(sql)
+        conn_db.cursor.execute(sql, (id_goal,)) # Because id_goal is a single value, we need to pass it as a one-element tuple
         conn_db.close_connection()
         title = 'Connection'
         message = 'Data deleted from Goal table.'
