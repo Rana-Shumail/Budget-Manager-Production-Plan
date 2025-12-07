@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from model.goal_inf import create_goal_table, insert_goal, Goal
+from model.goal_inf import insert_goal, Goal
 from model.goal_inf import fetch_goals, edit_goal, delete_goal
 
 class Goal_Frame(tk.Frame):
@@ -24,7 +24,7 @@ class Goal_Frame(tk.Frame):
     # Load and resize trash icon image        
     def load_images(self):
         try:
-            self.trash_icon = tk.PhotoImage(file = "UI/img/bin.png")
+            self.trash_icon = tk.PhotoImage(file = "img/bin.png")
             self.resized_icon = self.trash_icon.subsample(15, 15)
         except:
             title = 'Image Load Error'
@@ -67,25 +67,29 @@ class Goal_Frame(tk.Frame):
                             activebackground = "#01C64C", command = lambda i = goal_id: self.on_delete(i))
             delete_button.grid(row = next_row, column = 3, padx = 10, pady = 10, sticky = "nsew")
 
+    def refresh_display(self):
+        self.fetched_goals = fetch_goals() 
+
+        # Clear all existing goal-related widgets (rows > 0)
+        for widget in self.grid_slaves():
+
+            # Check if widget is below the title (row 0)
+            if int(widget.grid_info().get("row", 0)) > 0: 
+                widget.grid_forget()
+        
+        # Redisplay updated goals and buttons
+        self.display_info()
+        self.instruction_label()
+        self.new_goal_button()
+        self.main_menu_button()
+
     def on_delete(self, goal_id):
         try:            
             delete_goal(goal_id)
             title = 'Delete Goal'
             message = 'Goal deleted successfully.'
             messagebox.showinfo(title, message)
-            self.fetched_goals = fetch_goals()
-
-            # Refresh the goal frame display
-            for widget in self.grid_slaves():
-                if int(widget.grid_info()["row"]) > 0: # Skip title row
-                    widget.grid_forget()
-            
-            # Redisplay updated goals and buttons
-            self.display_info()
-            self.instruction_label()
-            self.new_goal_button()
-            self.main_menu_button()
-
+            self.refresh_display()
         except:
             title = 'Delete Goal'
             message = 'Goal could not be deleted.'
@@ -218,7 +222,7 @@ class Add_Goal_Frame(tk.Frame):
             title = "Add Goal"
             message = f"Goal {goal_name} added successfully."
             messagebox.showinfo(title, message)
-            self.parent_frame.on_delete(None) # Refresh the parent Goal_Frame display
+            self.parent_frame.refresh_display() # Refresh the parent Goal_Frame display
             self.window.destroy() # Close the add goal window
         except:
             title = "Add Goal"
@@ -361,7 +365,7 @@ class Edit_Goal_Frame(tk.Frame):
             title = "Edit Goal"
             message = f"Goal {new_name} edited successfully."
             messagebox.showinfo(title, message)
-            self.parent_frame.on_delete(None) # Refresh the parent Goal_Frame display
+            self.parent_frame.refresh_display() # Refresh the parent Goal_Frame display
             self.window.destroy() # Close the Edit goal window
         except:
             title = "Edit Goal"
